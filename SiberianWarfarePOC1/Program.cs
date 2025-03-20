@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Xml.Linq;
 
 namespace SiberianWarfarePOC1 {
     internal class Program {
@@ -8,76 +9,11 @@ namespace SiberianWarfarePOC1 {
         }
     }
 
-    internal class SWGameObjectComponent {
+    public class SWGameObjectComponent {
 
     }
-
-    internal abstract class ASWTransformComponent : SWGameObjectComponent {
-        protected Vector3 _position;
-        protected Vector3 _rotation;
-        protected Vector3 _scale;
-
-        protected ASWTransformComponent(Vector3 position, Vector3 rotation, Vector3 scale) {
-            _position = position;
-            _rotation = rotation;
-            _scale = scale;
-        }
-    }
-
-    public interface IImmutablePosition {
-        Vector3 M_Position { get; }
-    }
-    public interface IMutablePosition {
-        Vector3 M_Position { get; set; }
-    }
-    public interface IImmutableRotation {
-        Vector3 M_Rotation { get; }
-    }
-    public interface IMutableRotation {
-        Vector3 M_Rotation { get; set; }
-    }
-    public interface IImmutableScale {
-        Vector3 M_Scale { get; }
-    }
-    public interface IMutableScale {
-        Vector3 M_Scale { get; set; }
-    }
-
-
-    internal class SWTransformComponent :
-           ASWTransformComponent, IImmutablePosition, IMutablePosition, IImmutableRotation, IMutableRotation, IImmutableScale, IMutableScale {
-        public SWTransformComponent(
-            Vector3 position, Vector3 rotation, Vector3 scale) :
-            base(position, rotation, scale) {
-        }
-
-        Vector3 IImmutablePosition.M_Position => _position;
-        Vector3 IMutablePosition.M_Position {
-            get => _position;
-            set => _position = value;
-        }
-
-        Vector3 IImmutableRotation.M_Rotation => _rotation;
-        Vector3 IMutableRotation.M_Rotation {
-            get => _rotation;
-            set => _rotation = value;
-        }
-
-        Vector3 IImmutableScale.M_Scale => _scale;
-        Vector3 IMutableScale.M_Scale {
-            get => _scale;
-            set => _scale = value;
-        }
-    }
-
-
-
-    internal class SWGameObjectTypeComponent : SWGameObjectComponent {
-        public string Type { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-
-    }
+    
+    
 
     internal class SWGameObject {
         private List<SWGameObjectComponent> m_components = new List<SWGameObjectComponent>();
@@ -106,11 +42,6 @@ namespace SiberianWarfarePOC1 {
         public void RemoveUnit(SWGameObject unit) {
             m_units.Remove(unit);
         }
-
-        public void MoveUnit(SWGameObject unit, Vector3 newposition) {
-            var transform = unit.GetComponent<SWTransformComponent>();
-            transform.Position = newposition;
-        }
     }
 
     internal class SiberianWarfareGameState {
@@ -122,24 +53,34 @@ namespace SiberianWarfarePOC1 {
 
         void Initialize() {
             var gameObject = new SWGameObject();
-            gameObject.AddComponent(new SWTransformComponent { Position = new Vector3(0, 0, 0) });
+            gameObject.AddComponent(new TransformComponent(
+                new Vector3(0,0,0),
+                new Vector3(0,0,0),
+                new Vector3(1,1,1)));
             gameObject.AddComponent(
-                new SWGameObjectTypeComponent {
-                    Type = "Army Personnel",
-                    Name = "Infantry",
-                    Description = "Basic infantry unit"
-                });
+                new UnitTypeCompoment(
+                    "Army Personnel",
+                    "Infantry",
+                    "Basic infantry unit"));
             RegisterGameObject(gameObject);
 
             var warFactory = new SWGameObject();
-            warFactory.AddComponent(new SWTransformComponent { Position = new Vector3(10, 0, 0) });
+            warFactory.AddComponent(new TransformComponent(
+                new Vector3(10, 0, 0),
+                new Vector3(0, 0, 0),
+                new Vector3(1, 1, 1)));
             warFactory.AddComponent(
-                new SWGameObjectTypeComponent {
-                    Type = "Building",
-                    Name = "Heavy War Factory",
-                    Description = "Facility for producing heavy equipment"
-                });
+                new UnitTypeCompoment(
+                    "Building",
+                    "Heavy War Factory",
+                    "Facility for producing heavy equipment"
+                ));
             RegisterGameObject(warFactory);
+
+            var player = new Player();
+            player.AddUnit(gameObject);
+            player.AddUnit(warFactory);
+
         }
     }
 }
