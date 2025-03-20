@@ -44,8 +44,8 @@ namespace SiberianWarfarePOC1 {
     }
 
 
-    class SWTransformComponent :
-           ASWTransformComponent, IImmutablePosition, IMutablePosition, IImmutableRotation, IMutableRotation {
+    internal class SWTransformComponent :
+           ASWTransformComponent, IImmutablePosition, IMutablePosition, IImmutableRotation, IMutableRotation, IImmutableScale, IMutableScale {
         public SWTransformComponent(
             Vector3 position, Vector3 rotation, Vector3 scale) :
             base(position, rotation, scale) {
@@ -68,7 +68,6 @@ namespace SiberianWarfarePOC1 {
             get => _scale;
             set => _scale = value;
         }
-
     }
 
 
