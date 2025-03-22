@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SiberianWarfarePOC1.Interfaces;
 
-namespace SiberianWarfarePOC1
+namespace SiberianWarfarePOC1.Components
 {
-    public class ASWUnitTypeComponent : SWGameObjectComponent {
+    public abstract class UnitType : IComponent {
         protected string _type;
         protected string _name;
         protected string _description;
 
-        public ASWUnitTypeComponent(string type,
+        protected UnitType(string type,
             string name, string description) {
             _type = type;
             _name = name;
@@ -39,7 +40,7 @@ namespace SiberianWarfarePOC1
     }
 
     public class UnitTypeCompoment:
-        ASWUnitTypeComponent, IImmutableType, IMutableType,
+        UnitType, IImmutableType, IMutableType,
         IImmutableName, IMutableName, IImmutableDescription,
         IMutableDescription {
 

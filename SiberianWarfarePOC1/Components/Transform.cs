@@ -1,18 +1,19 @@
-﻿using System;
+﻿using SiberianWarfarePOC1.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SiberianWarfarePOC1
+namespace SiberianWarfarePOC1.Components
 {
-    internal abstract class ASWTransformComponent : SWGameObjectComponent {
+    internal abstract class Transform : IComponent {
         protected Vector3 _position;
         protected Vector3 _rotation;
         protected Vector3 _scale;
 
-        protected ASWTransformComponent(Vector3 position, Vector3 rotation, Vector3 scale) {
+        protected Transform(Vector3 position, Vector3 rotation, Vector3 scale) {
             _position = position;
             _rotation = rotation;
             _scale = scale;
@@ -39,7 +40,7 @@ namespace SiberianWarfarePOC1
     }
     
     internal class TransformComponent :
-        ASWTransformComponent, IImmutablePosition, IMutablePosition, IImmutableRotation, IMutableRotation, IImmutableScale, IMutableScale {
+        Transform, IImmutablePosition, IMutablePosition, IImmutableRotation, IMutableRotation, IImmutableScale, IMutableScale {
         public TransformComponent(
             Vector3 position, Vector3 rotation, Vector3 scale) :
             base(position, rotation, scale) {
