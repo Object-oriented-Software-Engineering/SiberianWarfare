@@ -10,14 +10,7 @@ namespace SiberianWarfarePOC1.GameObjects
     public class SWGameObject {
         private List<IComponent> m_components = new List<IComponent>();
 
-        private MovementState m_state;
-
-        public MovementState MState {
-            get => m_state;
-            set => m_state = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        public SWGameObject() {}
+       public SWGameObject() {}
 
         public void AddComponent(IComponent component) {
             m_components.Add(component);

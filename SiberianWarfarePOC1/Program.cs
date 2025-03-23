@@ -9,14 +9,16 @@ namespace SiberianWarfarePOC1 {
     internal class Program {
         static void Main(string[] args) {
             Console.WriteLine("Hello, World!");
+            var gameState = new SiberianWarfareGameState();
+            gameState.Initialize();
         }
     }
 
-    
-    
-    
 
-    
+
+
+
+
 
     internal class Player {
         List<SWGameObject> m_units = new List<SWGameObject>();
@@ -28,6 +30,24 @@ namespace SiberianWarfarePOC1 {
         public void RemoveUnit(SWGameObject unit) {
             m_units.Remove(unit);
         }
+
+        public void Scenario() {
+            var infantry = m_units.Where(unit => 
+                unit.GetComponent<IImmutableName>().M_Name == "Infantry").FirstOrDefault();
+
+            var availableActions = infantry?.GetComponent<MovementStateMachine>().GetAvailableActions();
+
+            var moveaction = availableActions.OfType<MoveAction>();
+
+            var moveArgs = new MoveAction.MoveArgs() {
+                MNewPosition = new Vector3(2, 2, 2)
+            };
+
+            moveaction.First().execute(moveArgs);
+
+
+
+        }
     }
 
     internal class SiberianWarfareGameState {
@@ -37,9 +57,8 @@ namespace SiberianWarfarePOC1 {
             m_gameObjects.Add(gameObject);
         }
 
-        void Initialize() {
+        public void Initialize() {
             var gameObject = new SWGameObject();
-            gameObject.MState = new MovableState(gameObject);
             gameObject.AddComponent(new TransformComponent(
                 new Vector3(0,0,0),
                 new Vector3(0,0,0),
@@ -49,11 +68,12 @@ namespace SiberianWarfarePOC1 {
                     "Army Personnel",
                     "Infantry",
                     "Basic infantry unit"));
+            gameObject.AddComponent(
+                new MovementStateMachine(gameObject,
+                    MovementStateMachine.EMovementState.MOVABLE));
             RegisterGameObject(gameObject);
-
-
+            
             var warFactory = new SWGameObject();
-            gameObject.MState = new StationaryState(warFactory);
             warFactory.AddComponent(new TransformComponent(
                 new Vector3(10, 0, 0),
                 new Vector3(0, 0, 0),
@@ -64,12 +84,16 @@ namespace SiberianWarfarePOC1 {
                     "Heavy War Factory",
                     "Facility for producing heavy equipment"
                 ));
+            warFactory.AddComponent(new MovementStateMachine(warFactory,
+                MovementStateMachine.EMovementState.STATIONARY));
             RegisterGameObject(warFactory);
-            warFactory.MState
-
+            
             var player = new Player();
             player.AddUnit(gameObject);
             player.AddUnit(warFactory);
+
+            player.Scenario();
+
 
         }
     }
