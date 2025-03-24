@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.VisualStudio.VsixColorCompiler" Version="17.0.31709.430" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Project Documentation\" />
+  </ItemGroup>
+
 </Project>
