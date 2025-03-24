@@ -9,7 +9,24 @@ using System.Threading.Tasks;
 namespace SiberianWarfarePOC1.GameObjects
 {
     internal class SiberianWarfareGameState : SWGameObject {
+        private static SiberianWarfareGameState _instance;
+        private static readonly object _lock = new object();
         private List<SWGameObject> m_gameObjects = new List<SWGameObject>();
+
+        private SiberianWarfareGameState() { }
+
+
+
+        public static SiberianWarfareGameState Instance {
+            get {
+                lock (_lock) {
+                    if (_instance == null) {
+                        _instance = new SiberianWarfareGameState();
+                    }
+                    return _instance;
+                }
+            }
+        }
 
         public void RegisterGameObject(SWGameObject gameObject) {
             m_gameObjects.Add(gameObject);
@@ -51,8 +68,6 @@ namespace SiberianWarfarePOC1.GameObjects
             player.AddUnit(warFactory);
 
             player.Scenario();
-
-
         }
     }
 }
