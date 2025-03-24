@@ -9,7 +9,7 @@ namespace SiberianWarfarePOC1 {
     internal class Program {
         static void Main(string[] args) {
             Console.WriteLine("Hello, World!");
-            var gameState = new SiberianWarfareGameState();
+            var gameState = SiberianWarfareGameState.Instance;
             gameState.Initialize();
         }
     }
