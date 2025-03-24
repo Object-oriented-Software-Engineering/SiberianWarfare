@@ -44,14 +44,14 @@ namespace SiberianWarfarePOC1.GameObjects
         // IMutablePosition is an interface that allows the GameObject
         // to have a mutable position.
         // The GameObject must have a TransformComponent.
-        private IMutablePosition m_position;
+        private IMutableTransform m_position;
         
         public MoveAction(SWGameObject targetGameObject) : base(targetGameObject){
             // GetComponent is a method that returns the first component of the specified type
             // that is attached to the GameObject. If no such component exists, it throws an exception.
             // IMutablePosition is an interface of the TransformComponent class that describes
             // a mutable position of the GameObject.
-            m_position = m_GameObject.GetComponent<IMutablePosition>() ??
+            m_position = m_GameObject.GetComponent<IMutableTransform>() ??
                          throw new NotSupportedException(); 
         }
 
@@ -60,7 +60,7 @@ namespace SiberianWarfarePOC1.GameObjects
             // that represents the new position of the GameObject after the move
             MoveArgs moveVector = input as MoveArgs ?? throw new NullReferenceException();
             // Set the new position of the GameObject.
-            m_position.M_Position = moveVector.MNewPosition;
+            m_position.Position = moveVector.MNewPosition;
         }
     }
 
@@ -69,17 +69,17 @@ namespace SiberianWarfarePOC1.GameObjects
     public class LocateAction : CAction {
         // IImmutablePosition is an interface that allows the GameObject 
         // to have an immutable position.
-        private IImmutablePosition m_position;
+        private IImmutableTransform m_position;
         // Position is a property that returns the position of the GameObject
         // as a Vector3 struct.
-        public Vector3 Position => m_position.M_Position;
+        public Vector3 Position => m_position.Position;
 
         public LocateAction(SWGameObject targetGameObject) : base(targetGameObject) {
             // GetComponent is a method that returns the first component of the specified type
             // that is attached to the GameObject. If no such component exists, it throws an exception.
             // IImmutablePosition is an interface of the TransformComponent class that describes
             // an immutable position of the GameObject.
-            m_position = m_GameObject.GetComponent<IImmutablePosition>();
+            m_position = m_GameObject.GetComponent<IImmutableTransform>();
         }
 
         // Execute is a method that performs the action on the GameObject. In this case,
