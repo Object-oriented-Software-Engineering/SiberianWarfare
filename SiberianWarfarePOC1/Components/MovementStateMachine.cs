@@ -15,12 +15,14 @@ namespace SiberianWarfarePOC1.Components {
             HIDE
         }
 
+        class MovementStateMachine_InitArgs : InitializationArgs {
+            public EMovementState state;
+        }
+
         private Dictionary<EMovementState, MovementState> m_states =
             new Dictionary<EMovementState, MovementState>();
 
         private MovementState m_currentState;
-        EMovementState m_movementState;
-
 
         public MovementState MCurrentState {
             get => m_currentState;
@@ -33,8 +35,18 @@ namespace SiberianWarfarePOC1.Components {
             m_states[EMovementState.MOVABLE] = new MovableState(host);
             m_states[EMovementState.HIDE] = new HideState(host);
 
+            Initialize(new MovementStateMachine_InitArgs(){state = state});
+        }
+
+        public void Initialize(InitializationArgs init)
+        {
+            if (init is MovementStateMachine_InitArgs args) {
+                SetState(args.state);
+            }
+        }
+
+        public void SetState(EMovementState state) {
             m_currentState = m_states[state];
-            m_movementState = state;
         }
 
         public IReadOnlyList<CAction> GetAvailableActions() {
@@ -44,8 +56,43 @@ namespace SiberianWarfarePOC1.Components {
         public void ExecuteAction(CAction action, ActionArgs args) {
             action.execute(args);
         }
+    }
+
+    public abstract class MovementState {
+
+        MovementStateMachine.EMovementState m_movementState;
+
+        protected List<CAction> m_Actions = new List<CAction>();
+        public IReadOnlyList<CAction> MActions => m_Actions;
+        private SWGameObject m_gameObject;
+
+        protected MovementState(SWGameObject mGameObject,
+            MovementStateMachine.EMovementState movementState) {
+            m_gameObject = mGameObject;
+            m_movementState = movementState;
+        }
+    }
 
 
+    public class StationaryState : MovementState {
+        public StationaryState(SWGameObject context) : 
+            base(context,MovementStateMachine.EMovementState.STATIONARY) {
+            m_Actions.Add(new LocateAction(context));
+        }
+    }
 
+    public class MovableState : MovementState {
+        public MovableState(SWGameObject mGameObject) : 
+            base(mGameObject, MovementStateMachine.EMovementState.MOVABLE) {
+            m_Actions.Add(new LocateAction(mGameObject));
+            m_Actions.Add(new MoveAction(mGameObject));
+        }
+    }
+
+    public class HideState : MovementState {
+        public HideState(SWGameObject mGameObject) : 
+            base(mGameObject, MovementStateMachine.EMovementState.HIDE) {
+            m_Actions.Add(new MoveAction(mGameObject));
+        }
     }
 }

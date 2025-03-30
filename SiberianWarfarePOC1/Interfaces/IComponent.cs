@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace SiberianWarfarePOC1.Interfaces
 {
-    public class IComponent {
+    public class InitializationArgs {
+        
+    }
 
+    public interface IComponent
+    {
+        void Initialize(InitializationArgs init);
     }
 }

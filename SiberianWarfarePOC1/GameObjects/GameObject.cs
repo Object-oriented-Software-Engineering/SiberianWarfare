@@ -10,7 +10,7 @@ namespace SiberianWarfarePOC1.GameObjects
     public class SWGameObject {
         private List<IComponent> m_components = new List<IComponent>();
 
-       public SWGameObject() {}
+        public SWGameObject() {}
 
         public void AddComponent(IComponent component) {
             m_components.Add(component);

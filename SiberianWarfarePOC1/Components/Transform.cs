@@ -20,46 +20,39 @@ namespace SiberianWarfarePOC1.Components
         }
     }
 
-    public interface IImmutablePosition {
-        Vector3 M_Position { get; }
+    public interface IImmutableTransform {
+        Vector3 Position { get; }
+        Vector3 Rotation { get; }
+        Vector3 Scale { get; }
     }
-    public interface IMutablePosition {
-        Vector3 M_Position { get; set; }
+
+    public interface IMutableTransform {
+        Vector3 Position { get; set; }
+        Vector3 Rotation { get; set; }
+        Vector3 Scale { get; set; }
     }
-    public interface IImmutableRotation {
-        Vector3 M_Rotation { get; }
-    }
-    public interface IMutableRotation {
-        Vector3 M_Rotation { get; set; }
-    }
-    public interface IImmutableScale {
-        Vector3 M_Scale { get; }
-    }
-    public interface IMutableScale {
-        Vector3 M_Scale { get; set; }
-    }
-    
+
+
     internal class TransformComponent :
-        Transform, IImmutablePosition, IMutablePosition, IImmutableRotation, IMutableRotation, IImmutableScale, IMutableScale {
+        Transform, IImmutableTransform, IMutableTransform {
         public TransformComponent(
             Vector3 position, Vector3 rotation, Vector3 scale) :
             base(position, rotation, scale) {
         }
 
-        Vector3 IImmutablePosition.M_Position => _position;
-        Vector3 IMutablePosition.M_Position {
+        Vector3 IImmutableTransform.Position => _position;
+        Vector3 IImmutableTransform.Rotation => _rotation;
+        Vector3 IImmutableTransform.Scale => _scale;
+
+        Vector3 IMutableTransform.Position {
             get => _position;
             set => _position = value;
         }
-
-        Vector3 IImmutableRotation.M_Rotation => _rotation;
-        Vector3 IMutableRotation.M_Rotation {
+        Vector3 IMutableTransform.Rotation {
             get => _rotation;
             set => _rotation = value;
         }
-
-        Vector3 IImmutableScale.M_Scale => _scale;
-        Vector3 IMutableScale.M_Scale {
+        Vector3 IMutableTransform.Scale {
             get => _scale;
             set => _scale = value;
         }

@@ -19,9 +19,9 @@ namespace SiberianWarfarePOC1.GameObjects
             m_units.Remove(unit);
         }
 
-        public void Scenario() {
-            var infantry = m_units.Where(unit =>
-                unit.GetComponent<IImmutableName>().M_Name == "Infantry").FirstOrDefault();
+        public void Scenario1_MoveUnit() {
+            var infantry = m_units.FirstOrDefault(unit =>
+                unit.GetComponent<IImmutableName>().M_Name == "Infantry");
 
             var availableActions = infantry?.GetComponent<MovementStateMachine>().GetAvailableActions();
 
@@ -32,6 +32,12 @@ namespace SiberianWarfarePOC1.GameObjects
             };
 
             moveaction.First().execute(moveArgs);
+        }
+
+        public void Scenario2_Duck() {
+            var infantry = m_units.FirstOrDefault(unit =>
+                unit.GetComponent<IImmutableName>().M_Name == "Infantry");
+
         }
     }
 }
