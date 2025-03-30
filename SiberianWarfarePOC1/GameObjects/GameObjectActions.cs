@@ -16,10 +16,10 @@ namespace SiberianWarfarePOC1.GameObjects
         void ExecuteCommand(CommandArgs commandArguments);
     }
 
-    // CAction is an abstract class that represents an action
-    // that can be performed on a GameObject. Specific actions
-    // exist on the relevant GameObject states and are the hooks
-    // that allow the GameObject to change or query its state.
+    /// <summary>
+    ///  ACtion is an abstract class that represents an action
+    /// that can be performed on a GameObject.  
+    /// </summary>
     public abstract class ACommand {
 
         protected ICommandReceiver m_receiver;
@@ -28,7 +28,7 @@ namespace SiberianWarfarePOC1.GameObjects
             m_receiver = receiver;
         }
 
-        public abstract void execute();
+        public abstract void execute(CommandArgs args);
     }
 
     public class MoveCommand : ACommand {
@@ -45,12 +45,14 @@ namespace SiberianWarfarePOC1.GameObjects
         }
         private MoveArgs m_targetPosition;
 
-        public MoveCommand(Vector3 newPosiiton, ICommandReceiver reciever): base(reciever) {
+        public MoveCommand(Vector3 newPosiiton, ICommandReceiver receiver): base(receiver) {
             m_targetPosition = new MoveArgs(){MNewPosition = newPosiiton};
         }
 
-        public override void execute() {
-            m_receiver.ExecuteCommand(m_targetPosition);
+        public override void execute(CommandArgs args) {
+            if (args is MoveArgs moveArgs) {
+                m_receiver.ExecuteCommand(moveArgs);
+            }
         }
     }
 
@@ -59,18 +61,24 @@ namespace SiberianWarfarePOC1.GameObjects
     public class LocateCommand : ACommand {
         public class LocationArgs : CommandArgs {
             private Vector3 m_Position;
-
+            
             public Vector3 MPosition {
                 get => m_Position;
                 set => m_Position = value;
+            }
+
+            public LocationArgs() {
+               m_Position = Vector3.Zero;  
             }
         }
         public LocateCommand(ICommandReceiver receiver) :
             base(receiver) {
         }
 
-        public override void execute() {
-            m_receiver.ExecuteCommand(new LocationArgs());
+        public override void execute(CommandArgs args) {
+            if (args is LocationArgs locationArgs) {
+                m_receiver.ExecuteCommand(locationArgs);
+            }
         }
     }
 
@@ -78,7 +86,7 @@ namespace SiberianWarfarePOC1.GameObjects
         public HideCommand(ICommandReceiver receiver) :
             base(receiver) {
         }
-        public override void execute() {
+        public override void execute(CommandArgs args) {
             m_receiver.ExecuteCommand(new CommandArgs());
         }
     }

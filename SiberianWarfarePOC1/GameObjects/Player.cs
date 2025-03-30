@@ -23,15 +23,15 @@ namespace SiberianWarfarePOC1.GameObjects
             var infantry = m_units.FirstOrDefault(unit =>
                 unit.GetComponent<IImmutableName>().M_Name == "Infantry");
 
-            var availableActions = infantry?.GetComponent<MovementStateMachine>().GetAvailableActions();
+            var kineticStateMachine = infantry?.GetComponent<KineticStateMachine>();
 
-            var moveaction = availableActions.OfType<MoveAction>();
-
-            var moveArgs = new MoveAction.MoveArgs() {
-                MNewPosition = new Vector3(2, 2, 2)
-            };
-
-            moveaction.First().execute(moveArgs);
+            if (kineticStateMachine.GetAvailableActions().Contains(Actions.LOCATE))
+            {
+                // Send command to move the unit
+                LocateCommand locateCommand = new LocateCommand(kineticStateMachine);
+                var location = new LocateCommand.LocationArgs();
+                locateCommand.execute(location);
+            }
         }
 
         public void Scenario2_Duck() {

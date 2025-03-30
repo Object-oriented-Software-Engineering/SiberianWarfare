@@ -12,6 +12,6 @@ namespace SiberianWarfarePOC1.Interfaces
 
     public interface IComponent
     {
-        void Initialize(InitializationArgs init);
+        
     }
 }
