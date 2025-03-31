@@ -16,6 +16,10 @@ namespace SiberianWarfarePOC1.Interfaces
         
     }
 
+    public interface IComponentProvider {
+        T GetComponent<T>() where T : class;
+    }
+
     public interface IImmutableTransform {
         Vector3 Position { get; }
         Vector3 Rotation { get; }

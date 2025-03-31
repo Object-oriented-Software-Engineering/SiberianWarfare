@@ -30,9 +30,9 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public abstract class AKineticState : IState, ICommandReceiver {
-        protected SWGameObject m_unit;
+        protected IComponentProvider m_unit;
         protected IStateMachine m_stateMachine;
-        public AKineticState(SWGameObject unit, IStateMachine stateMachine) {
+        public AKineticState(IComponentProvider unit, IStateMachine stateMachine) {
             m_unit = unit;
             m_stateMachine = stateMachine;
         }
@@ -42,7 +42,7 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class MovingKineticState : AKineticState {
-        public MovingKineticState(SWGameObject unit, IStateMachine state) :
+        public MovingKineticState(IComponentProvider unit, IStateMachine state) :
             base(unit,state) {
         }
 
@@ -59,7 +59,7 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class StoppedKineticState : AKineticState {
-        public StoppedKineticState(SWGameObject unit,IStateMachine state) : 
+        public StoppedKineticState(IComponentProvider unit,IStateMachine state) : 
             base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
@@ -75,7 +75,7 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class StaticKineticState : AKineticState {
-        public StaticKineticState(SWGameObject unit,IStateMachine state) : 
+        public StaticKineticState(IComponentProvider unit,IStateMachine state) : 
             base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
@@ -94,7 +94,7 @@ namespace SiberianWarfarePOC1.Components {
         private Dictionary<LocationState, IState> mStates;
         private IState mCurrentState;
 
-        public KineticStateMachine(SWGameObject unit)
+        public KineticStateMachine(IComponentProvider unit)
         {
             mStates = new Dictionary<LocationState, IState> {
                 {LocationState.MOVING, new MovingKineticState(unit,this)},

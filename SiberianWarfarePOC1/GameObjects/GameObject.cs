@@ -7,7 +7,7 @@ using SiberianWarfarePOC1.Interfaces;
 
 namespace SiberianWarfarePOC1.GameObjects
 {
-    public class SWGameObject {
+    public class SWGameObject :IComponentProvider {
         private List<IComponent> m_components = new List<IComponent>();
 
         public SWGameObject() {}
