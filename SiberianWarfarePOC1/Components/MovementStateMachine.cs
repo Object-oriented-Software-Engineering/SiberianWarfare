@@ -30,9 +30,11 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public abstract class AKineticState : IState, ICommandReceiver {
-        SWGameObject m_unit;
-        public AKineticState(SWGameObject unit) {
+        protected SWGameObject m_unit;
+        protected KineticStateMachine m_stateMachine;
+        public AKineticState(SWGameObject unit, KineticStateMachine stateMachine) {
             m_unit = unit;
+            m_stateMachine = stateMachine;
         }
         public abstract List<Actions> GetAvailableActions();
         public abstract void ExecuteCommand(CommandArgs commandArguments);
@@ -40,7 +42,8 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class MovingKineticState : AKineticState {
-        public MovingKineticState(SWGameObject unit) : base(unit) {
+        public MovingKineticState(SWGameObject unit, KineticStateMachine state) :
+            base(unit,state) {
         }
 
         public override List<Actions> GetAvailableActions() {
@@ -50,12 +53,14 @@ namespace SiberianWarfarePOC1.Components {
         public override void ExecuteCommand(CommandArgs commandArguments) {
             if (commandArguments is MoveCommand.MoveArgs moveArgs) {
                 // change course to the new position
+
             }
         }
     }
 
     public class StoppedKineticState : AKineticState {
-        public StoppedKineticState(SWGameObject unit) : base(unit) {
+        public StoppedKineticState(SWGameObject unit,KineticStateMachine state) : 
+            base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
             return new List<Actions> { Actions.MOVE,  Actions.LOCATE };
@@ -63,21 +68,24 @@ namespace SiberianWarfarePOC1.Components {
 
         public override void ExecuteCommand(CommandArgs commandArguments) {
             if (commandArguments is MoveCommand.MoveArgs moveArgs) {
-                // Move the unit to the new position
+                m_unit.GetComponent<IMutableTransform>().Position = moveArgs.MNewPosition;
+                m_stateMachine.SetState(LocationState.MOVING);
             }
         }
     }
 
     public class StaticKineticState : AKineticState {
-        public StaticKineticState(SWGameObject unit) : base(unit) {
+        public StaticKineticState(SWGameObject unit,KineticStateMachine state) : 
+            base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
             return new List<Actions> { Actions.LOCATE };
         }
 
         public override void ExecuteCommand(CommandArgs commandArguments) {
-            if (commandArguments is LocateCommand.LocationArgs moveArgs) {
-                // Acquire the location of the unit
+            if (commandArguments is LocateCommand.LocationArgs moveArgs)
+            {
+                moveArgs.MPosition = m_unit.GetComponent<IImmutableTransform>().Position;
             }
         }
     }
@@ -90,9 +98,9 @@ namespace SiberianWarfarePOC1.Components {
         public KineticStateMachine(SWGameObject unit)
         {
             mStates = new Dictionary<LocationState, IState> {
-                {LocationState.MOVING, new MovingKineticState(unit)},
-                {LocationState.STOPPED, new StoppedKineticState(unit)},
-                {LocationState.STATIC, new StaticKineticState(unit)}
+                {LocationState.MOVING, new MovingKineticState(unit,this)},
+                {LocationState.STOPPED, new StoppedKineticState(unit,this)},
+                {LocationState.STATIC, new StaticKineticState(unit, this)}
             };
             mCurrentState = mStates[LocationState.STATIC];
         }

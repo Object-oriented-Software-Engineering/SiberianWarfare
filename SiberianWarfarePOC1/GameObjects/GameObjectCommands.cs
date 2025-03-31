@@ -38,6 +38,7 @@ namespace SiberianWarfarePOC1.GameObjects
         public class MoveArgs : CommandArgs {
             private Vector3 m_newPosition;
 
+
             public Vector3 MNewPosition {
                 get => m_newPosition;
                 set => m_newPosition = value;
