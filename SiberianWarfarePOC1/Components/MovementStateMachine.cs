@@ -43,7 +43,7 @@ namespace SiberianWarfarePOC1.Components {
 
     public class MovingKineticState : AKineticState {
         public MovingKineticState(IComponentProvider unit, IStateMachine state) :
-            base(unit,state) {
+            base(unit, state) {
         }
 
         public override List<Actions> GetAvailableActions() {
@@ -59,11 +59,11 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class StoppedKineticState : AKineticState {
-        public StoppedKineticState(IComponentProvider unit,IStateMachine state) : 
+        public StoppedKineticState(IComponentProvider unit, IStateMachine state) :
             base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
-            return new List<Actions> { Actions.MOVE,  Actions.LOCATE };
+            return new List<Actions> { Actions.MOVE, Actions.LOCATE };
         }
 
         public override void ExecuteCommand(CommandArgs commandArguments) {
@@ -75,7 +75,7 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class StaticKineticState : AKineticState {
-        public StaticKineticState(IComponentProvider unit,IStateMachine state) : 
+        public StaticKineticState(IComponentProvider unit, IStateMachine state) :
             base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
@@ -83,23 +83,44 @@ namespace SiberianWarfarePOC1.Components {
         }
 
         public override void ExecuteCommand(CommandArgs commandArguments) {
-            if (commandArguments is LocateCommand.LocationArgs moveArgs)
-            {
+            if (commandArguments is LocateCommand.LocationArgs moveArgs) {
                 moveArgs.MPosition = m_unit.GetComponent<IImmutableTransform>().Position;
             }
         }
     }
 
-    public class KineticStateMachine :IStateMachine, IComponent, ICommandReceiver {
+    public interface IStateFactory {
+        IState CreateMovingState(IComponentProvider unit, IStateMachine stateMachine);
+        IState CreateStoppedState(IComponentProvider unit, IStateMachine stateMachine);
+        IState CreateStaticState(IComponentProvider unit, IStateMachine stateMachine);
+    }
+
+    public class MoveStateFactory : IStateFactory {
+        public IState CreateMovingState(IComponentProvider unit,
+            IStateMachine stateMachine) {
+            return new MovingKineticState(unit, stateMachine);
+        }
+
+        public IState CreateStoppedState(IComponentProvider unit,
+            IStateMachine stateMachine) {
+            return new StoppedKineticState(unit, stateMachine);
+        }
+
+        public IState CreateStaticState(IComponentProvider unit,
+            IStateMachine stateMachine) {
+            return new StaticKineticState(unit, stateMachine);
+        }
+    }
+
+    public class KineticStateMachine : IStateMachine, IComponent, ICommandReceiver {
         private Dictionary<LocationState, IState> mStates;
         private IState mCurrentState;
 
-        public KineticStateMachine(IComponentProvider unit)
-        {
+        public KineticStateMachine(IComponentProvider unit,IStateFactory factory) {
             mStates = new Dictionary<LocationState, IState> {
-                {LocationState.MOVING, new MovingKineticState(unit,this)},
-                {LocationState.STOPPED, new StoppedKineticState(unit,this)},
-                {LocationState.STATIC, new StaticKineticState(unit, this)}
+                {LocationState.MOVING, factory.CreateMovingState(unit,this)},
+                {LocationState.STOPPED, factory.CreateStoppedState(unit,this)},
+                {LocationState.STATIC, factory.CreateStaticState(unit, this)}
             };
             mCurrentState = mStates[LocationState.STATIC];
         }

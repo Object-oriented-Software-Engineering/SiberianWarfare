@@ -33,6 +33,7 @@ namespace SiberianWarfarePOC1.GameObjects
         }
 
         public void Initialize() {
+            MoveStateFactory moveStateFactory = new MoveStateFactory();
             var gameObject = new SWGameObject();
             gameObject.AddComponent(new TransformComponent(
                 new Vector3(0, 0, 0),
@@ -44,7 +45,7 @@ namespace SiberianWarfarePOC1.GameObjects
                     "Infantry",
                     "Basic infantry unit"));
             gameObject.AddComponent(
-                new KineticStateMachine(gameObject));
+                new KineticStateMachine(gameObject,moveStateFactory));
             RegisterGameObject(gameObject);
 
             var warFactory = new SWGameObject();
@@ -58,7 +59,7 @@ namespace SiberianWarfarePOC1.GameObjects
                     "Heavy War Factory",
                     "Facility for producing heavy equipment"
                 ));
-            warFactory.AddComponent(new KineticStateMachine(warFactory));
+            warFactory.AddComponent(new KineticStateMachine(warFactory, moveStateFactory));
             RegisterGameObject(warFactory);
 
             var player = new Player();
