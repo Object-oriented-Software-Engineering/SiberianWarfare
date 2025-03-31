@@ -19,20 +19,7 @@ namespace SiberianWarfarePOC1.Components
             _scale = scale;
         }
     }
-
-    public interface IImmutableTransform {
-        Vector3 Position { get; }
-        Vector3 Rotation { get; }
-        Vector3 Scale { get; }
-    }
-
-    public interface IMutableTransform {
-        Vector3 Position { get; set; }
-        Vector3 Rotation { get; set; }
-        Vector3 Scale { get; set; }
-    }
-
-
+    
     internal class TransformComponent :
         Transform, IImmutableTransform, IMutableTransform {
         public TransformComponent(

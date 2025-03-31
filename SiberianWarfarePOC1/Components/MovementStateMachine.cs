@@ -31,8 +31,8 @@ namespace SiberianWarfarePOC1.Components {
 
     public abstract class AKineticState : IState, ICommandReceiver {
         protected SWGameObject m_unit;
-        protected KineticStateMachine m_stateMachine;
-        public AKineticState(SWGameObject unit, KineticStateMachine stateMachine) {
+        protected IStateMachine m_stateMachine;
+        public AKineticState(SWGameObject unit, IStateMachine stateMachine) {
             m_unit = unit;
             m_stateMachine = stateMachine;
         }
@@ -42,7 +42,7 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class MovingKineticState : AKineticState {
-        public MovingKineticState(SWGameObject unit, KineticStateMachine state) :
+        public MovingKineticState(SWGameObject unit, IStateMachine state) :
             base(unit,state) {
         }
 
@@ -59,7 +59,7 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class StoppedKineticState : AKineticState {
-        public StoppedKineticState(SWGameObject unit,KineticStateMachine state) : 
+        public StoppedKineticState(SWGameObject unit,IStateMachine state) : 
             base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
@@ -75,7 +75,7 @@ namespace SiberianWarfarePOC1.Components {
     }
 
     public class StaticKineticState : AKineticState {
-        public StaticKineticState(SWGameObject unit,KineticStateMachine state) : 
+        public StaticKineticState(SWGameObject unit,IStateMachine state) : 
             base(unit, state) {
         }
         public override List<Actions> GetAvailableActions() {
@@ -89,7 +89,6 @@ namespace SiberianWarfarePOC1.Components {
             }
         }
     }
-    
 
     public class KineticStateMachine :IStateMachine, IComponent, ICommandReceiver {
         private Dictionary<LocationState, IState> mStates;
